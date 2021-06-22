@@ -7,11 +7,18 @@
     <groupId>org.example</groupId>
     <artifactId>spring-course</artifactId>
     <version>1.0-SNAPSHOT</version>
+
     <packaging>pom</packaging>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <spring.version>5.3.3</spring.version>
     </properties>
+
+    <modules>
+        <module>first-servlet</module>
+        <module>products-on-spring</module>
+    </modules>
 
 </project>
