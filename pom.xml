@@ -20,6 +20,7 @@
         <module>first-servlet</module>
         <module>products-on-spring</module>
         <module>spring-mvc-product</module>
+        <module>spring-boot-products</module>
     </modules>
 
 </project>
