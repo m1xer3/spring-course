@@ -17,6 +17,8 @@
 
         <mapping class="ru.danilsibgatyllin.models.User"/>
         <mapping class="ru.danilsibgatyllin.models.Product"/>
+        <mapping class="ru.danilsibgatyllin.models.Client"/>
+        <mapping class="ru.danilsibgatyllin.models.Order"/>
 
     </session-factory>
 </hibernate-configuration>

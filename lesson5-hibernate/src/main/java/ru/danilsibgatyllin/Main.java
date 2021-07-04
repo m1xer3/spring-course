@@ -1,7 +1,8 @@
 package ru.danilsibgatyllin;
 
 import org.hibernate.cfg.Configuration;
-import ru.danilsibgatyllin.models.Product;
+import ru.danilsibgatyllin.models.Client;
+import ru.danilsibgatyllin.services.ClientService;
 import ru.danilsibgatyllin.services.ProductRepository;
 import ru.danilsibgatyllin.services.UserRepository;
 
@@ -14,14 +15,18 @@ public class Main {
                 .buildSessionFactory();
 
         UserRepository ur = new UserRepository(emFactory);
-        System.out.println(ur.findAll());
-//        ur.delete(2L);
-
         ProductRepository rp = new ProductRepository(emFactory);
-        rp.saveOrUpdateProduct(new Product(null,"mandarin",250));
-        rp.saveOrUpdateProduct(new Product(3L,"kiwisr",9991));
+        ClientService clientService =new ClientService(emFactory);
 
-        System.out.println(rp.getAllProduct());
+        clientService.saveOrUpdateClient(new Client(null,"Petr"));
+        clientService.saveOrUpdateClient(new Client(null,"Jony"));
+
+        clientService.addPoductInOrder(2L,3L);
+        clientService.addPoductInOrder(2L,1L);
+        clientService.addPoductInOrder(2L,3L);
+
+        System.out.println(clientService.clientProducts(2L));
+        System.out.println(clientService.whoByThisProduct(3L));
 
     }
 }
