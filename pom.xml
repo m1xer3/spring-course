@@ -21,6 +21,7 @@
         <module>products-on-spring</module>
         <module>spring-mvc-product</module>
         <module>spring-boot-products</module>
+        <module>lesson5-hibernate</module>
     </modules>
 
 </project>
