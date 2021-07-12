@@ -3,14 +3,15 @@ package ru.danilsibgatyllin.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.danilsibgatyllin.models.User;
 import ru.danilsibgatyllin.models.UserRepository;
+import ru.danilsibgatyllin.models.UserSpecifications;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/user")
@@ -26,10 +27,25 @@ public class UserController {
     }
 
     @GetMapping
-    public String listPage(Model model) {
+    public String listPage(Model model,
+                           @RequestParam("usernameFilter") Optional<String> usernameFilter,
+                           @RequestParam("minAge") Optional<Integer> minAge,
+                           @RequestParam("maxAge") Optional<Integer> maxAge){
         logger.info("User list page requested");
 
-        model.addAttribute("users", userRepository.findAll());
+        Specification<User> spec = Specification.where(null);
+
+        if (usernameFilter.isPresent() && !usernameFilter.get().isBlank()) {
+            spec = spec.and(UserSpecifications.usernamePrefix(usernameFilter.get()));
+        }
+        if (minAge.isPresent()) {
+            spec = spec.and(UserSpecifications.minAge(minAge.get()));
+        }
+        if (maxAge.isPresent()) {
+            spec = spec.and(UserSpecifications.maxAge(maxAge.get()));
+        }
+
+        model.addAttribute("users", userRepository.findAll(spec));
         return "users";
     }
 
@@ -50,10 +66,10 @@ public class UserController {
     public String update(User user) {
         if(user.getId()==null){
             logger.info("Add user "+user);
-            userRepository.insert(user);
+            userRepository.save(user);
         } else {
             logger.info("Update user "+user);
-            userRepository.update(user);
+            userRepository.save(user);
         }
         return "redirect:/user";
     }
@@ -61,7 +77,7 @@ public class UserController {
     @GetMapping("/del/{id}")
     public String delete(@PathVariable("id") Long id) {
         logger.info("Delete user id "+id);
-        userRepository.delete(id);
+        userRepository.deleteById(id);
         return "redirect:/user";
     }
 

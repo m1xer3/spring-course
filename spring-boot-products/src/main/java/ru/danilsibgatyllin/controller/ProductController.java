@@ -3,14 +3,15 @@ package ru.danilsibgatyllin.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.danilsibgatyllin.models.Product;
 import ru.danilsibgatyllin.models.ProductRepository;
+import ru.danilsibgatyllin.models.ProductSpecifications;
+
+import java.util.Optional;
 
 
 @Controller
@@ -26,9 +27,24 @@ public class ProductController {
     }
 
     @GetMapping
-    public String listPage(Model model) {
+    public String listPage(Model model,
+                           @RequestParam("productNameFilter")Optional<String> productNameFilter,
+                           @RequestParam("minCost")Optional<Integer> minCost,
+                           @RequestParam("maxCost")Optional<Integer> maxCost) {
         logger.info("Product list page requested");
-        model.addAttribute("product", productRepository.getAllProduct());
+
+        Specification<Product> spec =Specification.where(null);
+
+        if(productNameFilter.isPresent()&&!productNameFilter.get().isBlank()){
+            spec=spec.and(ProductSpecifications.productPrefix(productNameFilter.get()));
+        }
+        if (minCost.isPresent()){
+            spec=spec.and(ProductSpecifications.minCost(minCost.get()));
+        }
+        if (maxCost.isPresent()){
+            spec=spec.and(ProductSpecifications.maxCost(maxCost.get()));
+        }
+        model.addAttribute("product", productRepository.findAll(spec));
         return "product";
     }
 
@@ -42,7 +58,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public String editProduct(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("product",productRepository.getOneProduct(id));
+        model.addAttribute("product",productRepository.findById(id));
         return "product_form";
     }
 
@@ -50,10 +66,10 @@ public class ProductController {
     public String update(Product product) {
         if(product.getId()==null){
             logger.info("Add product"+product);
-            productRepository.addProduct(product);
+            productRepository.save(product);
         } else {
             logger.info("Update product"+product);
-            productRepository.updateProduct(product);
+            productRepository.save(product);
         }
         return "redirect:/product";
     }
@@ -62,7 +78,7 @@ public class ProductController {
     @GetMapping("/del/{id}")
     public String delete(@PathVariable("id") Long id) {
         logger.info("Delete product id "+id);
-        productRepository.deleteProduct(id);
+        productRepository.deleteById(id);
         return "redirect:/product";
     }
 
