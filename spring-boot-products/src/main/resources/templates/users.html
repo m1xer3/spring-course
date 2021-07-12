@@ -73,7 +73,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="user : ${users}">
+                <tr th:if="${users.hasContent()}" th:each="user : ${users.content}">
                     <th scope="row" th:text="${user.id}">1</th>
                     <td th:text="${user.username}">Alex</td>
                     <td th:text="${user.age}">99</td>
@@ -82,15 +82,53 @@
                         <a class="btn btn-danger" th:href="@{/user/del/{id}(id = ${user.id})}"><i class="far fa-trash-alt"></i></a>
                     </td>
                 </tr>
+
+                <tr th:unless="${users.hasContent()}">
+                    <td colspan="4">No data</td>
+                </tr>
+
                 </tbody>
             </table>
+        </div>
+
+        <div class="col-12">
+            <nav aria-label="...">
+                <ul class="pagination">
+                    <li class="page-item "
+                    th:classappend="${!users.hasPrevious()} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/user(page=${users.getNumber()},size=${users.size},
+                        usernameFilter=${param.usernameFilter},minAge=${param.minAge},maxAge=${param.maxAge}
+                        )}">Previous</a>
+                    </li>
+
+                    <li th:each="num : ${#numbers.sequence(1,users.getTotalPages())}"
+                        th:classappend="${num == users.number+1} ? 'active'"
+                        class="page-item">
+                        <a class="page-link"
+                           th:text="${num}"
+                           th:href="@{/user(page=${num},size=${users.size},
+                        usernameFilter=${param.usernameFilter},minAge=${param.minAge},maxAge=${param.maxAge}
+                        )}">1</a>
+                    </li>
+
+                    <li class="page-item"
+                     th:classappend="${!users.hasNext()} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/user(page=${users.getNumber()+2},size=${users.size},
+                        usernameFilter=${param.usernameFilter},minAge=${param.minAge},maxAge=${param.maxAge}
+                        )}">Next</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+
+<script src="https//code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"

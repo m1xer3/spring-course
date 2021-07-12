@@ -74,18 +74,54 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="product : ${product}">
-                    <th scope="row" th:text="${product.id}">1</th>
-                    <td th:text="${product.title}">Banana</td>
-                    <td th:text="${product.cost}">125</td>
+                <tr th:unless="${product.isEmpty()}" th:each="singlProduct : ${product}">
+                    <th scope="row" th:text="${singlProduct.id}">1</th>
+                    <td th:text="${singlProduct.title}">Banana</td>
+                    <td th:text="${singlProduct.cost}">125</td>
                     <td>
-                        <a class="btn btn-success" th:href="@{/product/{id}(id = ${product.id})}"><i class="fas fa-edit"></i></a>
-                        <a class="btn btn-danger" th:href="@{/product/del/{id}(id = ${product.id})}"><i class="far fa-trash-alt"></i></a>
+                        <a class="btn btn-success" th:href="@{/product/{id}(id = ${singlProduct.id})}"><i class="fas fa-edit"></i></a>
+                        <a class="btn btn-danger" th:href="@{/product/del/{id}(id = ${singlProduct.id})}"><i class="far fa-trash-alt"></i></a>
                     </td>
                 </tr>
+
+                <tr th:if="${product.isEmpty()}">
+                    <td colspan="4">No data</td>
+                </tr>
+
                 </tbody>
             </table>
         </div>
+    </div>
+    <div class="col-12">
+        <nav aria-label="...">
+            <ul class="pagination">
+                <li class="page-item "
+                    th:classappend="${!product.hasPrevious()} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/product(page=${product.getNumber()},size=${product.size},
+                        productNameFilter=${param.productNameFilter},minCost=${param.minCost},maxAge=${param.Cost}
+                        )}">Previous</a>
+                </li>
+
+                <li th:each="num : ${#numbers.sequence(1,product.getTotalPages())}"
+                    th:classappend="${num == product.number+1} ? 'active'"
+                    class="page-item">
+                    <a class="page-link"
+                       th:text="${num}"
+                       th:href="@{/product(page=${num},size=${product.size},
+                        productNameFilter=${param.productNameFilter},minCost=${param.minCost},maxCost=${param.maxCost}
+                        )}">1</a>
+                </li>
+
+                <li class="page-item"
+                    th:classappend="${!product.hasNext()} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/product(page=${product.getNumber()+2},size=${product.size},
+                        productNameFilter=${param.productNameFilter},minCost=${param.minCost},maxCost=${param.maxCost}
+                        )}">Next</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 
