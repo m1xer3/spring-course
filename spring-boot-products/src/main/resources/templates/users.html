@@ -66,9 +66,17 @@
             <table class="table table-bordered my-2">
                 <thead>
                 <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Username</th>
-                    <th scope="col">Age</th>
+                    <th scope="col">Id
+                    <a th:href="@{/user(page=${param.page},size=${users.size},
+                        usernameFilter=${param.usernameFilter},minAge=${param.minAge},maxAge=${param.maxAge},sortField='id'
+                        )}"><i class="fa fa-sort-down"></i></a></th>
+                    <th scope="col">Username
+                        <a th:href="@{/user(page=${param.page},size=${users.size},
+                        usernameFilter=${param.usernameFilter},minAge=${param.minAge},maxAge=${param.maxAge},sortField='username'
+                        )}"><i class="fa fa-sort-down"></i></a></th>
+                    <th scope="col">Age<a th:href="@{/user(page=${param.page},size=${users.size},
+                        usernameFilter=${param.usernameFilter},minAge=${param.minAge},maxAge=${param.maxAge},sortField='age'
+                        )}"><i class="fa fa-sort-down"></i></a></th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>

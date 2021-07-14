@@ -67,9 +67,21 @@
             <table class="table table-bordered my-2">
                 <thead>
                 <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Product name</th>
-                    <th scope="col">Cost</th>
+                    <th scope="col">Id
+                        <a th:href="@{/product(page=${param.page},size=${product.size},
+                        productNameFilter=${param.productNameFilter},minCost=${param.minCost},maxAge=${param.Cost},sortField='id'
+                        )}"><i class="fa fa-sort-down"></i></a>
+                    </th>
+                    <th scope="col">Product name
+                        <a th:href="@{/product(page=${param.page},size=${product.size},
+                        productNameFilter=${param.productNameFilter},minCost=${param.minCost},maxAge=${param.Cost},sortField='title'
+                        )}"><i class="fa fa-sort-down"></i></a>
+                    </th>
+                    <th scope="col">Cost
+                        <a th:href="@{/product(page=${param.page},size=${product.size},
+                        productNameFilter=${param.productNameFilter},minCost=${param.minCost},maxAge=${param.Cost},sortField='cost'
+                        )}"><i class="fa fa-sort-down"></i></a>
+                    </th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
