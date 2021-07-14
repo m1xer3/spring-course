@@ -1,0 +1,35 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<div class="col-12" th:fragment="pagination_form_product">
+  <nav aria-label="...">
+    <ul class="pagination">
+      <li class="page-item "
+          th:classappend="${!product.hasPrevious()} ? 'disabled'">
+        <a class="page-link"
+           th:href="@{/product(page=${product.getNumber()},size=${product.size},
+                        productNameFilter=${param.productNameFilter},minCost=${param.minCost},maxAge=${param.Cost}
+                        )}">Previous</a>
+      </li>
+
+      <li th:each="num : ${#numbers.sequence(1,product.getTotalPages())}"
+          th:classappend="${num == product.number+1} ? 'active'"
+          class="page-item">
+        <a class="page-link"
+           th:text="${num}"
+           th:href="@{/product(page=${num},size=${product.size},
+                        productNameFilter=${param.productNameFilter},minCost=${param.minCost},maxCost=${param.maxCost}
+                        )}">1</a>
+      </li>
+
+      <li class="page-item"
+          th:classappend="${!product.hasNext()} ? 'disabled'">
+        <a class="page-link"
+           th:href="@{/product(page=${product.getNumber()+2},size=${product.size},
+                        productNameFilter=${param.productNameFilter},minCost=${param.minCost},maxCost=${param.maxCost}
+                        )}">Next</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+</html>
