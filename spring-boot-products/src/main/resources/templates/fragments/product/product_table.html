@@ -2,7 +2,7 @@
 
 
 <tbody th:fragment="product_table">
-<tr th:unless="${product.isEmpty()}" th:each="singlProduct : ${product}">
+<tr th:unless="${products.isEmpty()}" th:each="singlProduct : ${products}">
     <th scope="row" th:text="${singlProduct.id}">1</th>
     <td th:text="${singlProduct.title}">Banana</td>
     <td th:text="${singlProduct.cost}">125</td>
@@ -12,7 +12,7 @@
     </td>
 </tr>
 
-<tr th:if="${product.isEmpty()}">
+<tr th:if="${products.isEmpty()}">
     <td colspan="4">No data</td>
 </tr>
 
