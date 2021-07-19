@@ -13,7 +13,7 @@ public  final class ProductSpecifications {
     }
 
     public static Specification<Product> minCost(Integer minCost){
-        return (root,query,builder) -> builder.le(root.get("cost"),minCost);
+        return (root,query,builder) -> builder.ge(root.get("cost"),minCost);
     }
 
 }
