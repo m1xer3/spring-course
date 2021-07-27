@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.danilsibgatyllin.models.User;
-import ru.danilsibgatyllin.models.UserRepository;
+import ru.danilsibgatyllin.models.UserParams;
+import ru.danilsibgatyllin.service.UserService;
 
 @Controller
 @RequestMapping("/user")
@@ -18,18 +19,20 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    private final UserRepository userRepository;
+
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
-    public String listPage(Model model) {
+    public String listPage(Model model,
+                           UserParams userParams) {
         logger.info("User list page requested");
 
-        model.addAttribute("users", userRepository.findAll());
+        model.addAttribute("users", userService.findWithFilter(userParams));
         return "users";
     }
 
@@ -42,7 +45,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String editUser(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("user",userRepository.findById(id));
+        model.addAttribute("user",userService.findById(id));
         return "user_form";
     }
 
@@ -50,10 +53,10 @@ public class UserController {
     public String update(User user) {
         if(user.getId()==null){
             logger.info("Add user "+user);
-            userRepository.insert(user);
+            userService.save(user);
         } else {
             logger.info("Update user "+user);
-            userRepository.update(user);
+            userService.save(user);
         }
         return "redirect:/user";
     }
@@ -61,10 +64,7 @@ public class UserController {
     @GetMapping("/del/{id}")
     public String delete(@PathVariable("id") Long id) {
         logger.info("Delete user id "+id);
-        userRepository.delete(id);
+        userService.deleteById(id);
         return "redirect:/user";
     }
-
-
-
 }
