@@ -21,6 +21,9 @@ public class User {
     @Column(length = 512,nullable = false)
     private String username;
 
+    @Column
+    private String password;
+
     public User() {
     }
 
@@ -28,4 +31,10 @@ public class User {
         this.username = username;
     }
 
+    public User(Long id, String username, String password, Integer age) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.age = age;
+    }
 }
