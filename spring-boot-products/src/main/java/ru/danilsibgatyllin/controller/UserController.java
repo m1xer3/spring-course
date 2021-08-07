@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -56,6 +57,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @Secured("ROLE_SUPER_ADMIN")
     public String editUser(@PathVariable("id") Long id, Model model) {
         logger.info("Edit user page requested");
 
@@ -68,6 +70,7 @@ public class UserController {
     }
 
     @PostMapping("/add")
+    @Secured("ROLE_SUPER_ADMIN")
     public String update(@Valid @ModelAttribute("user") UserDto userDto, BindingResult result, Model model) {
 
         if (!userDto.getPassword().equals(userDto.getRepeatPassword())) {
@@ -86,6 +89,7 @@ public class UserController {
     }
 
     @GetMapping("/del/{id}")
+    @Secured("ROLE_SUPER_ADMIN")
     public String delete(@PathVariable("id") Long id) {
         logger.info("Delete user id "+id);
         userService.deleteById(id);
