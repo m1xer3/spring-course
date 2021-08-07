@@ -2,7 +2,6 @@ package ru.danilsibgatyllin.interfaces;
 
 import org.springframework.data.domain.Page;
 import ru.danilsibgatyllin.controller.UserDto;
-import ru.danilsibgatyllin.models.User;
 import ru.danilsibgatyllin.models.UserParams;
 
 import java.util.List;
@@ -13,7 +12,7 @@ public interface UserInterface {
 
     Page<UserDto> findWithFilter(UserParams userParams);
 
-    Optional<UserDto> findById(Long id);
+    Optional<UserDto> findById( Long id);
 
     void save(UserDto user);
 

@@ -21,7 +21,10 @@ public interface UserRepository extends JpaRepository<User,Long>, JpaSpecificati
                            @Param("minAge") Integer minAge,
                            @Param("maxAge") Integer maxAge);
 
-    Optional<User> findByUsername(String username);
+    @Query("select u from User u " +
+            "left join fetch u.roles " +
+            "where u.username=:username")
+    Optional<User> findByUsername(@Param("username") String username);
 
 
     // Identity Map
