@@ -1,96 +1,40 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"/>
-    <title>EShop application</title>
-</head>
+<head th:replace="fragments/header"></head>
 
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">EShop</a>
-
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">List</a>
-                <a class="nav-link" th:href="@{/user}">Users</a>
-                <a class="nav-link" th:href="@{/product}">Products</a>
-            </li>
-        </ul>
-    </div>
-</nav>
+<nav th:replace="fragments/navigation"></nav>
 
 <div class="container">
     <div class="row py-2">
-        <div class="col-12">
-            <a class="btn btn-primary" th:href="@{/user/new}">Add User</a>
-        </div>
+        <div class="col-12" th:replace="fragments/add::add('user')"></div>
 
-        <div class="col-12 mt-3">
-            <form class="form-inline" th:method="get">
-                <div class="form-group mb-2 mr-2">
-                    <label for="usernameFilter" class="sr-only">Username filter</label>
-                    <input type="text" class="form-control" id="usernameFilter" th:value="${param.usernameFilter}"
-                           name="usernameFilter" placeholder="Username filter">
-                </div>
-                <div class="form-group mb-2 mr-2">
-                    <label for="minAge" class="sr-only">Minimal age</label>
-                    <input type="number" class="form-control" id="minAge" th:value="${param.minAge}"
-                           name="minAge" placeholder="Minimal age">
-                </div>
-                <div class="form-group mb-2 mr-2">
-                    <label for="maxAge" class="sr-only">Maximal age</label>
-                    <input type="number" class="form-control" id="maxAge" th:value="${param.maxAge}"
-                           name="maxAge" placeholder="Maximal age">
-                </div>
-
-                <button type="submit" class="btn btn-primary mb-2">Apply</button>
-            </form>
-        </div>
+        <div th:replace="fragments/user/user_filter"></div>
 
         <div class="col-12">
             <table class="table table-bordered my-2">
                 <thead>
                 <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Username</th>
-                    <th scope="col">Age</th>
-                    <th scope="col">Actions</th>
+                    <th scope="col" th:replace="fragments/user/sort_header_user::sort_header_user('Id','id')"></th>
+                    <th scope="col" th:replace="fragments/user/sort_header_user::sort_header_user('Username','username')"></th>
+                    <th scope="col" th:replace="fragments/user/sort_header_user::sort_header_user('Age','age')"></th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr th:each="user : ${users}">
-                    <th scope="row" th:text="${user.id}">1</th>
-                    <td th:text="${user.username}">Alex</td>
-                    <td th:text="${user.age}">99</td>
-                    <td>
-                        <a class="btn btn-success" th:href="@{/user/{id}(id = ${user.id})}"><i class="fas fa-edit"></i></a>
-                        <a class="btn btn-danger" th:href="@{/user/del/{id}(id = ${user.id})}"><i class="far fa-trash-alt"></i></a>
-                    </td>
-                </tr>
-                </tbody>
+                <tbody th:replace="fragments/user/user_table"></tbody>
             </table>
+        </div>
+
+        <div th:replace="fragments/user/pagination_form_user">
         </div>
     </div>
 </div>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+
+<script src="https//code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"

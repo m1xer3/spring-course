@@ -1,8 +1,9 @@
-package ru.danilsibgatyllin.models;
+package ru.danilsibgatyllin.interfaces;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import ru.danilsibgatyllin.models.Product;
 
 public interface ProductRepository extends JpaRepository<Product,Long> , JpaSpecificationExecutor<Product> {
 
