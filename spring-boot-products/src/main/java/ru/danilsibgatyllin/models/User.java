@@ -4,6 +4,9 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -24,17 +27,21 @@ public class User {
     @Column
     private String password;
 
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
+
     public User() {
     }
 
-    public User(String username) {
-        this.username = username;
-    }
-
-    public User(Long id, String username, String password, Integer age) {
+    public User(Long id, String username, String password, Integer age, Set<Role> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.age = age;
+        this.roles = roles;
     }
 }

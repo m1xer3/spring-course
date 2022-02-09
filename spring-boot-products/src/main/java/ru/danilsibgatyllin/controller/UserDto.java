@@ -3,6 +3,7 @@ package ru.danilsibgatyllin.controller;
 import lombok.Data;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import java.util.Set;
 
 //Data transfer object
 
@@ -23,11 +24,13 @@ public class UserDto {
     @NotBlank
     private String repeatPassword;
 
-    public UserDto(Long id,  String username, Integer age, String password) {
+    private Set<RoleDto> roles;
+
+    public UserDto(Long id, String username, Integer age, Set<RoleDto> roles) {
         this.id = id;
-        this.age = age;
         this.username = username;
-        this.password = password;
+        this.age = age;
+        this.roles = roles;
     }
 
     public UserDto() {
