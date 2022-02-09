@@ -5,13 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import ru.danilsibgatyllin.models.User;
 import ru.danilsibgatyllin.models.UserParams;
 import ru.danilsibgatyllin.service.UserService;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/user")
@@ -39,7 +39,7 @@ public class UserController {
     @GetMapping("/new")
     public String newUserForm(Model model) {
         logger.info("New user page requested");
-        model.addAttribute("user", new User());
+        model.addAttribute("user", new UserDto());
         return "user_form";
     }
 
@@ -50,13 +50,19 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public String update(User user) {
-        if(user.getId()==null){
-            logger.info("Add user "+user);
-            userService.save(user);
+    public String update(@Valid @ModelAttribute("user") UserDto userDto, BindingResult result, Model model) {
+
+        if (!userDto.getPassword().equals(userDto.getRepeatPassword())) {
+            result.rejectValue("password", "", "Repeated password is not correct");
+            return "user_form";
+        }
+
+        if(userDto.getId()==null){
+            logger.info("Add user "+userDto);
+            userService.save(userDto);
         } else {
-            logger.info("Update user "+user);
-            userService.save(user);
+            logger.info("Update user "+userDto);
+            userService.save(userDto);
         }
         return "redirect:/user";
     }
