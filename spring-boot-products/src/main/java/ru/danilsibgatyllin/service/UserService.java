@@ -8,7 +8,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.danilsibgatyllin.controller.RoleDto;
 import ru.danilsibgatyllin.controller.UserDto;
+import ru.danilsibgatyllin.interfaces.RoleRepository;
 import ru.danilsibgatyllin.interfaces.UserInterface;
 import ru.danilsibgatyllin.models.User;
 import ru.danilsibgatyllin.models.UserParams;
@@ -18,23 +20,28 @@ import ru.danilsibgatyllin.models.UserSpecifications;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserInterface {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository,
+                       RoleRepository roleRepository,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder=passwordEncoder;
+        this.roleRepository=roleRepository;
     }
 
     @Override
     public List<UserDto> findAll() {
-        return userRepository.findAll().stream().map(user -> new UserDto(user.getId(),user.getUsername(),user.getAge(),null))
+        return userRepository.findAll().stream().map(user -> new UserDto(user.getId(),user.getUsername(),user.getAge(),mapRolesDto(user)))
                 .collect(Collectors.toList());
     }
 
@@ -59,7 +66,7 @@ public class UserService implements UserInterface {
                             Optional.ofNullable(userParams.getSize()).orElse(3),
                             Sort.by(Sort.Direction.ASC,Optional.ofNullable(userParams.getSortField())
                                     .filter(c -> !c.isBlank())
-                                    .orElse("id")))).map(user -> new UserDto(user.getId(),user.getUsername(),user.getAge(),null));
+                                    .orElse("id")))).map(user -> new UserDto(user.getId(),user.getUsername(),user.getAge(),mapRolesDto(user)));
         }else{
             return userRepository.findAll(spec,
                     PageRequest.of(
@@ -67,26 +74,36 @@ public class UserService implements UserInterface {
                             Optional.ofNullable(userParams.getSize()).orElse(3),
                             Sort.by(Sort.Direction.DESC,Optional.ofNullable(userParams.getSortField())
                                     .filter(c -> !c.isBlank())
-                                    .orElse("id")))).map(user -> new UserDto(user.getId(),user.getUsername(),user.getAge(),null));
+                                    .orElse("id")))).map(user -> new UserDto(user.getId(),user.getUsername(),user.getAge(),mapRolesDto(user)));
         }
     }
 
     @Override
     public Optional<UserDto> findById(Long id) {
-        return userRepository.findById(id).map(user -> new UserDto(user.getId(),user.getUsername(),user.getAge(),null));
+        return userRepository.findById(id).map(user -> new UserDto(user.getId(),user.getUsername(),user.getAge(),mapRolesDto(user)));
     }
 
     @Override
     public void save(UserDto userDto) {
-        User user = new User(userDto.getId(),
+        User user = new User(
+                userDto.getId(),
                 userDto.getUsername(),
                 passwordEncoder.encode(userDto.getPassword()),
-                userDto.getAge());
+                userDto.getAge(),
+                userDto.getRoles().stream()
+                        .map(roleDto -> roleRepository.getOne(roleDto.getId()))
+                        .collect(Collectors.toSet()));
         userRepository.save(user);
     }
 
     @Override
     public void deleteById(Long id) {
         userRepository.deleteById(id);
+    }
+
+    private static Set<RoleDto> mapRolesDto(User user) {
+        return user.getRoles().stream()
+                .map(role -> new RoleDto(role.getId(), role.getName()))
+                .collect(Collectors.toSet());
     }
 }
